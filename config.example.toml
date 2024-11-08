@@ -1,0 +1,9 @@
+[telegram]
+token = ""
+chat_id = 1
+
+[mastodon]
+base_url = ""
+key = ""
+secret = ""
+token = ""
