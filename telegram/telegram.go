@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/mymmrac/telego"
@@ -60,6 +61,10 @@ func Listen(bot *telego.Bot, chatID int64, postFuncs ...func(utils.Msg)) {
 			var msg utils.Msg
 			if message.Text != "" {
 				log.Println("Text message")
+				if strings.Contains(message.Text, "!fwdoff") {
+					log.Println("There is a forwarding off mark in the message")
+					goto no_post
+				}
 				msg = utils.Msg{Text: message.Text}
 			} else if message.MediaGroupID != "" {
 				log.Println("Media group message, not supported")
@@ -74,6 +79,10 @@ func Listen(bot *telego.Bot, chatID int64, postFuncs ...func(utils.Msg)) {
 				fileData, err := tu.DownloadFile(bot.FileDownloadURL(file.FilePath))
 				if err != nil {
 					log.Fatal(err)
+					goto no_post
+				}
+				if strings.Contains(message.Caption, "!fwdoff") {
+					log.Println("There is a forwarding off mark in the message")
 					goto no_post
 				}
 				msg = utils.Msg{Text: message.Caption, Media: [][]byte{fileData}}
